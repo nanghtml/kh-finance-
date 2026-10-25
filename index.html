@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="km" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ប្រព័ន្ធគណនាហិរញ្ញវត្ថុ និងប្រាក់ខែ (Khmer Finance Pro)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Kantumruy Pro', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f5ff',
+                            100: '#e0eafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        }
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
+                        'glow': '0 0 20px rgba(99, 102, 241, 0.35)',
+                        'card': '0 10px 30px -5px rgba(0, 0, 0, 0.05)'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Prevent auto-zoom on mobile devices when focusing inputs */
+        input, select, textarea {
+            font-size: 16px !important;
+        }
+        body {
+            font-family: 'Kantumruy Pro', sans-serif;
+            touch-action: manipulation;
+            background-color: #f8fafc;
+        }
+        /* Glassmorphic elements */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .dark .glass-card {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 99px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        /* Animation transitions */
+        .tab-btn {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .input-field {
+            transition: all 0.2s ease-in-out;
+        }
+        .input-field:focus {
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 h-full flex flex-col antialiased selection:bg-indigo-500 selection:text-white">
+
+    <!-- Top Navigation Bar -->
+    <header class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 sticky top-0 z-30 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="relative group">
+                    <div class="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl blur opacity-70 group-hover:opacity-100 transition duration-300"></div>
+                    <div class="relative bg-gradient-to-tr from-indigo-600 to-violet-600 text-white p-2.5 rounded-xl shadow-lg flex items-center justify-center">
+                        <i class="fa-solid fa-calculator-simple text-xl"></i>
+                    </div>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg sm:text-xl bg-gradient-to-r from-slate-900 via-indigo-950 to-indigo-700 dark:from-white dark:via-indigo-200 dark:to-indigo-400 bg-clip-text text-transparent leading-tight tracking-tight">
+                        Khmer Finance Pro
+                    </h1>
+                    <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400">ប្រព័ន្ធគណនាប្រាក់ខែ និងកម្ចីប្រាក់ទំនើប</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button onclick="toggleDarkMode()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition duration-200 shadow-sm border border-slate-200/60 dark:border-slate-700/60" title="ប្តូរទម្រង់ពណ៌">
+                    <i class="fa-solid fa-moon text-base" id="dark-icon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container with Tabs -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col">
+        
+        <!-- Tab Navigation Buttons -->
+        <div class="flex space-x-2 overflow-x-auto pb-3 mb-6 no-scrollbar">
+            <button onclick="switchTab('salary')" id="tab-btn-salary" class="tab-btn px-4 py-2.5 rounded-xl font-semibold text-xs sm:text-sm flex items-center space-x-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md shadow-indigo-500/20 whitespace-nowrap border border-indigo-500/30">
+                <i class="fa-solid fa-money-bill-trend-up text-base"></i>
+                <span>គណនាប្រាក់ខែ & ម៉ោងថែម</span>
+            </button>
+            <button onclick="switchTab('loan')" id="tab-btn-loan" class="tab-btn px-4 py-2.5 rounded-xl font-semibold text-xs sm:text-sm flex items-center space-x-2.5 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 whitespace-nowrap">
+                <i class="fa-solid fa-building-columns text-base"></i>
+                <span>គណនាកម្ចីប្រាក់</span>
+            </button>
+            <button onclick="switchTab('history')" id="tab-btn-history" class="tab-btn px-4 py-2.5 rounded-xl font-semibold text-xs sm:text-sm flex items-center space-x-2.5 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 whitespace-nowrap">
+                <i class="fa-solid fa-clock-rotate-left text-base"></i>
+                <span>ប្រវត្តិកត់ត្រា (<span id="history-count">0</span>)</span>
+            </button>
+        </div>
+
+        <!-- ================= TAB 1: SALARY CALCULATOR ================= -->
+        <div id="tab-salary" class="tab-content space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- Inputs Section -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Basic Info Card -->
+                    <div class="glass-card rounded-2xl p-5 sm:p-6 shadow-card transition-all">
+                        <div class="flex items-center space-x-3 mb-5 border-b border-slate-200/80 dark:border-slate-800 pb-3">
+                            <div class="p-2 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 rounded-lg">
+                                <i class="fa-solid fa-user-gear text-lg"></i>
+                            </div>
+                            <h2 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                                ព័ត៌មានមូលដ្ឋាន និងប្រាក់ខែគោល
+                            </h2>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">រូបិយប័ណ្ណ</label>
+                                <select id="sal-currency" class="input-field w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium">
+                                    <option value="USD">ដុល្លារអាមេរិក ($)</option>
+                                    <option value="KHR">រៀល (៛)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">ប្រាក់ខែគោល (Base Salary)</label>
+                                <div class="relative">
+                                    <input type="number" id="sal-base" placeholder="ឧ. 450" class="input-field w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium" value="450">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">ថ្ងៃធ្វើការក្នុងមួយខែ</label>
+                                <input type="number" id="sal-days" placeholder="ឧ. 26" class="input-field w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium" value="26">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">ម៉ោងធ្វើការក្នុងមួយថ្ងៃ</label>
+                                <input type="number" id="sal-hours-day" placeholder="ឧ. 8" class="input-field w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium" value="8">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Overtime (OT) Card -->
+                    <div class="glass-card rounded-2xl p-5 sm:p-6 shadow-card transition-all">
+                        <div class="flex items-center space-x-3 mb-5 border-b border-slate-200/80 dark:border-slate-800 pb-3">
+                            <div class="p-2 bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 rounded-lg">
+                                <i class="fa-solid fa-business-time text-lg"></i>
+                            </div>
+                            <h2 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                                ម៉ោងថែមម៉ោង (Overtime - OT)
+                            </h2>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div class="bg-indigo-50/60 dark:bg-indigo-950/30 p-4 rounded-xl border border-indigo-100 dark:border-indigo-900/40">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-xs font-bold text-indigo-900 dark:text-indigo-300">OT 100% (ធម្មតា)</span>
+                                    <span class="text-[10px] bg-indigo-200 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 px-2 py-0.5 rounded-full font-bold">1.0x</span>
+                                </div>
+                                <input type="number" id="ot-100-hours" placeholder="ចំនួនម៉ោង" class="input-field w-full bg-white dark:bg-slate-900 border border-indigo-200 dark:border-indigo-800 rounded-lg px-3 py-2 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm mb-1.5" value="0">
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">ស្មើនឹង ១ គុណនឹងថ្លៃម៉ោង</p>
+                            </div>
+                            <div class="bg-amber-50/60 dark:bg-amber-950/30 p-4 rounded-xl border border-amber-100 dark:border-amber-900/40">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-xs font-bold text-amber-900 dark:text-amber-300">OT 150% (យប់/ថ្ងៃសម្រាក)</span>
+                                    <span class="text-[10px] bg-amber-200 dark:bg-amber-900 text-amber-800 dark:text-amber-200 px-2 py-0.5 rounded-full font-bold">1.5x</span>
+                                </div>
+                                <input type="number" id="ot-150-hours" placeholder="ចំនួនម៉ោង" class="input-field w-full bg-white dark:bg-slate-900 border border-amber-200 dark:border-amber-800 rounded-lg px-3 py-2 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm mb-1.5" value="0">
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">ស្មើនឹង ១.៥ ដងថ្លៃម៉ោង</p>
+                            </div>
+                            <div class="bg-rose-50/60 dark:bg-rose-950/30 p-4 rounded-xl border border-rose-100 dark:border-rose-900/40">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-xs font-bold text-rose-900 dark:text-rose-300">OT 200% (បុណ្យជាតិ)</span>
+                                    <span class="text-[10px] bg-rose-200 dark:bg-rose-900 text-rose-800 dark:text-rose-200 px-2 py-0.5 rounded-full font-bold">2.0x</span>
+                                </div>
+                                <input type="number" id="ot-200-hours" placeholder="ចំនួនម៉ោង" class="input-field w-full bg-white dark:bg-slate-900 border border-rose-200 dark:border-rose-800 rounded-lg px-3 py-2 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-rose-500 text-sm mb-1.5" value="0">
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">ស្មើនឹង ២ ដងថ្លៃម៉ោង</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Allowances & Deductions Card -->
+                    <div class="glass-card rounded-2xl p-5 sm:p-6 shadow-card transition-all">
+                        <div class="flex items-center space-x-3 mb-5 border-b border-slate-200/80 dark:border-slate-800 pb-3">
+                            <div class="p-2 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 rounded-lg">
+                                <i class="fa-solid fa-wallet text-lg"></i>
+                            </div>
+                            <h2 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                                លុយបាយ លុយផ្សេងៗ និងការកាត់ប្រាក់
+                            </h2>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">លុយបាយ (Meal Allowance)</label>
+                                <input type="number" id="sal-meal" placeholder="ឧ. 50" class="input-field w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium" value="50">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">ប្រាក់ឧបត្ថម្ភផ្សេងៗ (Bonus/Transport)</label>
+                                <input type="number" id="sal-other-allowance" placeholder="ឧ. 30" class="input-field w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium" value="30">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">ប្រាក់ពន្ធលើប្រាក់បៀវត្ស (Tax)</label>
+                                <input type="number" id="sal-tax" placeholder="ឧ. 0" class="input-field w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium" value="0">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">ប្រាក់បដិភាគ ប.ស.ស / កាត់ផ្សេងៗ</label>
+                                <input type="number" id="sal-deduction" placeholder="ឧ. 0" class="input-field w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium" value="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex items-center space-x-3">
+                        <button onclick="calculateSalary()" class="flex-1 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-semibold py-3.5 px-6 rounded-xl shadow-lg shadow-indigo-500/25 active:scale-[0.99] transition duration-150 flex items-center justify-center space-x-2 border border-indigo-400/30">
+                            <i class="fa-solid fa-calculator text-base"></i>
+                            <span>គណនាប្រាក់ខែសរុប</span>
+                        </button>
+                        <button onclick="saveSalaryRecord()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold py-3.5 px-5 rounded-xl shadow-lg shadow-emerald-500/20 active:scale-[0.99] transition duration-150 flex items-center space-x-2 border border-emerald-400/30" title="រក្សាទុកទិន្នន័យ">
+                            <i class="fa-solid fa-bookmark text-base"></i>
+                            <span class="hidden sm:inline">រក្សាទុក</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Salary Result Card -->
+                <div class="space-y-6">
+                    <div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl p-6 shadow-2xl relative overflow-hidden flex flex-col justify-between border border-indigo-500/30">
+                        <div class="absolute -right-12 -top-12 w-48 h-48 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
+                        <div class="absolute -left-12 -bottom-12 w-48 h-48 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"></div>
+                        
+                        <div>
+                            <div class="flex items-center justify-between mb-6">
+                                <span class="text-xs font-semibold tracking-wider text-indigo-300 uppercase flex items-center space-x-2">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                    <span>លទ្ធផលសង្ខេបប្រាក់ខែ</span>
+                                </span>
+                                <span id="res-currency-badge" class="bg-indigo-500/30 text-indigo-200 border border-indigo-400/30 text-xs px-3 py-1 rounded-full font-bold">USD</span>
+                            </div>
+                            
+                            <div class="mb-6 bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-white/10">
+                                <p class="text-xs text-slate-300 font-medium mb-1">ប្រាក់ខែសុទ្ធទទួលបាន (Net Salary)</p>
+                                <h3 id="res-net-salary" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">$0.00</h3>
+                            </div>
+
+                            <div class="space-y-3 border-t border-slate-700/60 pt-4 text-xs sm:text-sm">
+                                <div class="flex justify-between items-center py-1">
+                                    <span class="text-slate-400 flex items-center space-x-2">
+                                        <i class="fa-solid fa-clock text-indigo-400"></i>
+                                        <span>ថ្លៃម៉ោងមធ្យម/ម៉ោង:</span>
+                                    </span>
+                                    <span id="res-hourly-rate" class="font-semibold text-slate-200">$0.00</span>
+                                </div>
+                                <div class="flex justify-between items-center py-1">
+                                    <span class="text-slate-400 flex items-center space-x-2">
+                                        <i class="fa-solid fa-briefcase text-indigo-400"></i>
+                                        <span>ប្រាក់ខែគោល:</span>
+                                    </span>
+                                    <span id="res-base" class="font-semibold text-slate-200">$0.00</span>
+                                </div>
+                                <div class="flex justify-between items-center py-1">
+                                    <span class="text-slate-400 flex items-center space-x-2">
+                                        <i class="fa-solid fa-chart-line-up text-emerald-400"></i>
+                                        <span>សរុបម៉ោងថែម (OT):</span>
+                                    </span>
+                                    <span id="res-total-ot" class="font-bold text-emerald-400">+$0.00</span>
+                                </div>
+                                <div class="flex justify-between items-center py-1">
+                                    <span class="text-slate-400 flex items-center space-x-2">
+                                        <i class="fa-solid fa-bowl-food text-emerald-400"></i>
+                                        <span>លុយបាយ & ផ្សេងៗ:</span>
+                                    </span>
+                                    <span id="res-total-allowances" class="font-bold text-emerald-400">+$0.00</span>
+                                </div>
+                                <div class="flex justify-between items-center py-1">
+                                    <span class="text-slate-400 flex items-center space-x-2">
+                                        <i class="fa-solid fa-receipt text-rose-400"></i>
+                                        <span>សរុបការកាត់ប្រាក់:</span>
+                                    </span>
+                                    <span id="res-total-deductions" class="font-bold text-rose-400">-$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 pt-4 border-t border-slate-700/60 flex space-x-2">
+                            <button onclick="copySalaryResult()" class="flex-1 bg-white/10 hover:bg-white/20 active:bg-white/30 text-white text-xs font-semibold py-2.5 rounded-xl transition flex items-center justify-center space-x-2 border border-white/10">
+                                <i class="fa-solid fa-copy"></i>
+                                <span>ចម្លងលទ្ធផល</span>
+                            </button>
+                            <button onclick="printPayslip()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white text-xs font-semibold py-2.5 rounded-xl transition flex items-center justify-center space-x-2 shadow-md">
+                                <i class="fa-solid fa-print"></i>
+                                <span>បោះពុម្ពស្លាយ</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ================= TAB 2: LOAN CALCULATOR ================= -->
+        <div id="tab-loan" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Loan Inputs -->
+                <div class="lg:col-span-2 glass-card rounded-2xl p-5 sm:p-6 shadow-card space-y-4">
+                    <div class="flex items-center space-x-3 mb-4 border-b border-slate-200/80 dark:border-slate-800 pb-3">
+                        <div class="p-2 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 rounded-lg">
+                            <i class="fa-solid fa-hand-holding-dollar text-lg"></i>
+                        </div>
+                        <h2 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                            គណនាកម្ចីប្រាក់ និងការប្រាក់ (Loan Amortization)
+                        </h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">ទំហំទឹកប្រាក់កម្ចី (Loan Amount)</label>
+                            <input type="number" id="loan-amount" placeholder="ឧ. 10000" class="input-field w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium" value="10000">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">អត្រាការប្រាក់ប្រចាំឆ្នាំ (% ក្នុងមួយឆ្នាំ)</label>
+                            <input type="number" id="loan-rate" placeholder="ឧ. 12" class="input-field w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium" value="12">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">រយៈពេលកម្ចី (ជាខែ)</label>
+                            <input type="number" id="loan-term" placeholder="ឧ. 24" class="input-field w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium" value="24">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">ប្រភេទការគណនា</label>
+                            <select id="loan-type" class="input-field w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium">
+                                <option value="reducing">ការប្រាក់ថយចុះ (Reducing Balance)</option>
+                                <option value="flat">ការប្រាក់ថេរ (Flat Rate)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button onclick="calculateLoan()" class="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-semibold py-3.5 rounded-xl shadow-lg shadow-indigo-500/25 active:scale-[0.99] transition flex items-center justify-center space-x-2 mt-4 border border-indigo-400/30">
+                        <i class="fa-solid fa-calculator text-base"></i>
+                        <span>គណនាកម្ចី និងតារាងបង់ប្រាក់</span>
+                    </button>
+                </div>
+
+                <!-- Loan Results Card -->
+                <div class="glass-card rounded-2xl p-6 shadow-card flex flex-col justify-between border border-slate-200/80 dark:border-slate-800">
+                    <div>
+                        <h3 class="text-xs font-bold text-slate-400 dark:text-slate-400 mb-4 uppercase tracking-wider flex items-center space-x-2">
+                            <i class="fa-solid fa-chart-pie text-indigo-500"></i>
+                            <span>លទ្ធផលបង់ប្រាក់</span>
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="bg-gradient-to-r from-indigo-50 to-violet-50 dark:from-indigo-950/40 dark:to-violet-950/40 p-4 rounded-2xl border border-indigo-100 dark:border-indigo-900/40">
+                                <span class="text-xs text-indigo-600 dark:text-indigo-400 font-semibold block mb-1">ប្រាក់ត្រូវបង់ក្នុងមួយខែ (ប្រហែល)</span>
+                                <h4 id="loan-monthly-pay" class="text-2xl font-black text-indigo-950 dark:text-indigo-200">$0.00</h4>
+                            </div>
+                            <div class="space-y-2.5 text-xs sm:text-sm">
+                                <div class="flex justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+                                    <span class="text-slate-500 dark:text-slate-400">ប្រាក់ដើមសរុប:</span>
+                                    <span id="loan-res-principal" class="font-bold text-slate-800 dark:text-slate-200">$0.00</span>
+                                </div>
+                                <div class="flex justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+                                    <span class="text-slate-500 dark:text-slate-400">ការប្រាក់សរុប:</span>
+                                    <span id="loan-res-interest" class="font-bold text-amber-600 dark:text-amber-400">$0.00</span>
+                                </div>
+                                <div class="flex justify-between pt-1">
+                                    <span class="text-slate-700 dark:text-slate-300 font-bold">ទឹកប្រាក់សរុបត្រូវបង់:</span>
+                                    <span id="loan-res-total" class="font-black text-slate-900 dark:text-white">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="saveLoanRecord()" class="w-full mt-6 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold py-3 rounded-xl transition text-xs sm:text-sm flex items-center justify-center space-x-2 border border-slate-200 dark:border-slate-700">
+                        <i class="fa-solid fa-bookmark text-indigo-500"></i>
+                        <span>រក្សាទុករបាយការណ៍កម្ចី</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Amortization Table -->
+            <div class="glass-card rounded-2xl shadow-card overflow-hidden">
+                <div class="p-4 sm:p-5 border-b border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+                    <h3 class="font-bold text-slate-800 dark:text-slate-200 text-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-table-list text-indigo-600 dark:text-indigo-400"></i>
+                        <span>តារាងបង់ប្រាក់ប្រចាំខែ (Amortization Schedule)</span>
+                    </h3>
+                </div>
+                <div class="overflow-x-auto max-h-96">
+                    <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                        <thead class="bg-slate-100/80 dark:bg-slate-900 text-slate-600 dark:text-slate-400 sticky top-0 border-b border-slate-200 dark:border-slate-800">
+                            <tr>
+                                <th class="p-3.5 font-bold">ខែទី</th>
+                                <th class="p-3.5 font-bold">ប្រាក់បង់សរុប</th>
+                                <th class="p-3.5 font-bold">ប្រាក់ដើម</th>
+                                <th class="p-3.5 font-bold">ការប្រាក់</th>
+                                <th class="p-3.5 font-bold">សមតុល្យប្រាក់ដើមសល់</th>
+                            </tr>
+                        </thead>
+                        <tbody id="loan-schedule-body" class="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
+                            <tr>
+                                <td colspan="5" class="p-8 text-center text-slate-400 dark:text-slate-500">សូមចុចគណនាកម្ចីដើម្បីបង្ហាញតារាងលម្អិត។</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 3: HISTORY ================= -->
+        <div id="tab-history" class="tab-content hidden space-y-6">
+            <div class="glass-card rounded-2xl shadow-card overflow-hidden border border-slate-200/80 dark:border-slate-800">
+                <div class="p-5 border-b border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 flex items-center justify-between">
+                    <h3 class="font-bold text-slate-800 dark:text-slate-200 text-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-clock-rotate-left text-indigo-600 dark:text-indigo-400"></i>
+                        <span>ប្រវត្តិនៃការគណនាដែលបានរក្សាទុក</span>
+                    </h3>
+                    <button onclick="clearHistory()" class="text-xs text-rose-600 dark:text-rose-400 hover:text-rose-700 font-semibold px-3 py-1.5 bg-rose-50 dark:bg-rose-950/40 rounded-lg transition border border-rose-100 dark:border-rose-900/40">
+                        លុបប្រវត្តិទាំងអស់
+                    </button>
+                </div>
+                <div id="history-list" class="divide-y divide-slate-100 dark:divide-slate-800 p-4 space-y-3">
+                    <p class="text-center text-slate-400 py-6">មិនទាន់មានទិន្នន័យរក្សាទុកនៅឡើយទេ។</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Custom Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900/90 dark:bg-slate-100/90 text-white dark:text-slate-900 px-4 py-3 rounded-2xl shadow-2xl backdrop-blur-md transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center space-x-3 text-xs sm:text-sm font-semibold border border-white/10 dark:border-slate-800">
+        <i class="fa-solid fa-circle-check text-emerald-400 dark:text-emerald-600 text-base"></i>
+        <span id="toast-msg">បានប្រតិបត្តិដោយជោគជ័យ!</span>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Global State for History
+        let historyData = JSON.parse(localStorage.getItem('khmer_finance_history')) || [];
+
+        // Tab Switching Function
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('bg-gradient-to-r', 'from-indigo-600', 'to-violet-600', 'text-white', 'shadow-md', 'shadow-indigo-500/20', 'border-indigo-500/30');
+                el.classList.add('bg-white', 'dark:bg-slate-900', 'text-slate-600', 'dark:text-slate-400', 'hover:bg-slate-100', 'dark:hover:bg-slate-800', 'border', 'border-slate-200', 'dark:border-slate-800');
+            });
+
+            document.getElementById('tab-' + tabName).classList.remove('hidden');
+            const activeBtn = document.getElementById('tab-btn-' + tabName);
+            activeBtn.classList.remove('bg-white', 'dark:bg-slate-900', 'text-slate-600', 'dark:text-slate-400', 'hover:bg-slate-100', 'dark:hover:bg-slate-800', 'border-slate-200', 'dark:border-slate-800');
+            activeBtn.classList.add('bg-gradient-to-r', 'from-indigo-600', 'to-violet-600', 'text-white', 'shadow-md', 'shadow-indigo-500/20', 'border-indigo-500/30');
+
+            if (tabName === 'history') {
+                renderHistory();
+            }
+        }
+
+        // Dark Mode Toggle
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            document.getElementById('dark-icon').className = isDark ? 'fa-solid fa-sun text-amber-400' : 'fa-solid fa-moon';
+        }
+
+        // Toast Notification Helper
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // ================= SALARY CALCULATION =================
+        let lastSalaryResult = null;
+
+        function calculateSalary() {
+            const currency = document.getElementById('sal-currency').value;
+            const base = parseFloat(document.getElementById('sal-base').value) || 0;
+            const days = parseFloat(document.getElementById('sal-days').value) || 26;
+            const hoursPerDay = parseFloat(document.getElementById('sal-hours-day').value) || 8;
+            
+            const ot100 = parseFloat(document.getElementById('ot-100-hours').value) || 0;
+            const ot150 = parseFloat(document.getElementById('ot-150-hours').value) || 0;
+            const ot200 = parseFloat(document.getElementById('ot-200-hours').value) || 0;
+
+            const meal = parseFloat(document.getElementById('sal-meal').value) || 0;
+            const otherAllow = parseFloat(document.getElementById('sal-other-allowance').value) || 0;
+            const tax = parseFloat(document.getElementById('sal-tax').value) || 0;
+            const deduction = parseFloat(document.getElementById('sal-deduction').value) || 0;
+
+            // Hourly rate calculation: Base Salary / (Days * HoursPerDay)
+            const totalNormalHoursPerMonth = days * hoursPerDay;
+            const hourlyRate = totalNormalHoursPerMonth > 0 ? base / totalNormalHoursPerMonth : 0;
+
+            // Overtime calculations
+            const ot100Pay = ot100 * hourlyRate * 1.0;
+            const ot150Pay = ot150 * hourlyRate * 1.5;
+            const ot200Pay = ot200 * hourlyRate * 2.0;
+            const totalOT = ot100Pay + ot150Pay + ot200Pay;
+
+            const totalAllowances = meal + otherAllow;
+            const totalDeductions = tax + deduction;
+
+            const netSalary = base + totalOT + totalAllowances - totalDeductions;
+
+            const symbol = currency === 'USD' ? '$' : '៛';
+
+            // Display results
+            document.getElementById('res-currency-badge').innerText = currency;
+            document.getElementById('res-net-salary').innerText = currency === 'USD' ? '$' + netSalary.toFixed(2) : netSalary.toLocaleString() + ' ៛';
+            document.getElementById('res-hourly-rate').innerText = currency === 'USD' ? '$' + hourlyRate.toFixed(2) : hourlyRate.toLocaleString() + ' ៛';
+            document.getElementById('res-base').innerText = currency === 'USD' ? '$' + base.toFixed(2) : base.toLocaleString() + ' ៛';
+            document.getElementById('res-total-ot').innerText = (currency === 'USD' ? '+$' : '+') + totalOT.toFixed(2) + (currency === 'KHR' ? ' ៛' : '');
+            document.getElementById('res-total-allowances').innerText = (currency === 'USD' ? '+$' : '+') + totalAllowances.toFixed(2) + (currency === 'KHR' ? ' ៛' : '');
+            document.getElementById('res-total-deductions').innerText = (currency === 'USD' ? '-$' : '-') + totalDeductions.toFixed(2) + (currency === 'KHR' ? ' ៛' : '');
+
+            lastSalaryResult = {
+                type: 'ប្រាក់ខែ',
+                date: new Date().toLocaleDateString('km-KH'),
+                summary: `ប្រាក់ខែសុទ្ធ: ${netSalary.toFixed(2)} ${currency} (OT: ${totalOT.toFixed(2)})`
+            };
+
+            showToast('ការគណនាប្រាក់ខែបានជោគជ័យ!');
+            return lastSalaryResult;
+        }
+
+        function saveSalaryRecord() {
+            const res = lastSalaryResult || calculateSalary();
+            historyData.unshift(res);
+            localStorage.setItem('khmer_finance_history', JSON.stringify(historyData));
+            document.getElementById('history-count').innerText = historyData.length;
+            showToast('បានរក្សាទុកក្នុងប្រវត្តិ!');
+        }
+
+        function copySalaryResult() {
+            const net = document.getElementById('res-net-salary').innerText;
+            const text = `សេចក្តីសង្ខេបប្រាក់ខែ:\nប្រាក់ខែសុទ្ធទទួលបាន: ${net}\nកាលបរិច្ឆេទ: ${new Date().toLocaleDateString()}`;
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            showToast('បានចម្លងលទ្ធផលទៅកាន់ក្ដារតម្បៀតខ្ទាស់!');
+        }
+
+        function printPayslip() {
+            window.print();
+        }
+
+        // ================= LOAN CALCULATION =================
+        let lastLoanResult = null;
+
+        function calculateLoan() {
+            const amount = parseFloat(document.getElementById('loan-amount').value) || 0;
+            const annualRate = parseFloat(document.getElementById('loan-rate').value) || 0;
+            const termMonths = parseInt(document.getElementById('loan-term').value) || 1;
+            const loanType = document.getElementById('loan-type').value;
+
+            const tbody = document.getElementById('loan-schedule-body');
+            tbody.innerHTML = '';
+
+            let monthlyPayment = 0;
+            let totalInterest = 0;
+            let schedule = [];
+
+            const monthlyRate = (annualRate / 100) / 12;
+
+            if (loanType === 'reducing') {
+                if (monthlyRate === 0) {
+                    monthlyPayment = amount / termMonths;
+                } else {
+                    monthlyPayment = (amount * monthlyRate * Math.pow(1 + monthlyRate, termMonths)) / (Math.pow(1 + monthlyRate, termMonths) - 1);
+                }
+
+                let balance = amount;
+                for (let i = 1; i <= termMonths; i++) {
+                    let interestPayment = balance * monthlyRate;
+                    let principalPayment = monthlyPayment - interestPayment;
+                    balance -= principalPayment;
+                    if (balance < 0) balance = 0;
+
+                    totalInterest += interestPayment;
+                    schedule.push({
+                        month: i,
+                        payment: monthlyPayment,
+                        principal: principalPayment,
+                        interest: interestPayment,
+                        balance: balance
+                    });
+                }
+            } else {
+                // Flat Rate
+                let totalInterestAll = amount * (annualRate / 100) * (termMonths / 12);
+                let monthlyInterest = totalInterestAll / termMonths;
+                let monthlyPrincipal = amount / termMonths;
+                monthlyPayment = monthlyPrincipal + monthlyInterest;
+                totalInterest = totalInterestAll;
+
+                let balance = amount;
+                for (let i = 1; i <= termMonths; i++) {
+                    balance -= monthlyPrincipal;
+                    if (balance < 0) balance = 0;
+                    schedule.push({
+                        month: i,
+                        payment: monthlyPayment,
+                        principal: monthlyPrincipal,
+                        interest: monthlyInterest,
+                        balance: balance
+                    });
+                }
+            }
+
+            const totalPayment = amount + totalInterest;
+
+            document.getElementById('loan-monthly-pay').innerText = '$' + monthlyPayment.toFixed(2);
+            document.getElementById('loan-res-principal').innerText = '$' + amount.toFixed(2);
+            document.getElementById('loan-res-interest').innerText = '$' + totalInterest.toFixed(2);
+            document.getElementById('loan-res-total').innerText = '$' + totalPayment.toFixed(2);
+
+            // Populate table
+            schedule.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 dark:hover:bg-slate-800/50 transition';
+                tr.innerHTML = `
+                    <td class="p-3.5 font-bold text-indigo-600 dark:text-indigo-400">${row.month}</td>
+                    <td class="p-3.5 font-semibold">$${row.payment.toFixed(2)}</td>
+                    <td class="p-3.5 text-emerald-600 dark:text-emerald-400 font-medium">$${row.principal.toFixed(2)}</td>
+                    <td class="p-3.5 text-amber-600 dark:text-amber-400 font-medium">$${row.interest.toFixed(2)}</td>
+                    <td class="p-3.5 font-semibold text-slate-800 dark:text-slate-200">$${row.balance.toFixed(2)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            lastLoanResult = {
+                type: 'កម្ចីប្រាក់',
+                date: new Date().toLocaleDateString('km-KH'),
+                summary: `កម្ចី: $${amount} | បង់ខែ: $${monthlyPayment.toFixed(2)} (${termMonths} ខែ)`
+            };
+
+            showToast('ការគណនាកម្ចីបានជោគជ័យ!');
+        }
+
+        function saveLoanRecord() {
+            if (!lastLoanResult) calculateLoan();
+            historyData.unshift(lastLoanResult);
+            localStorage.setItem('khmer_finance_history', JSON.stringify(historyData));
+            document.getElementById('history-count').innerText = historyData.length;
+            showToast('បានរក្សាទុករបាយការណ៍កម្ចី!');
+        }
+
+        // ================= HISTORY MANAGEMENT =================
+        function renderHistory() {
+            const listEl = document.getElementById('history-list');
+            document.getElementById('history-count').innerText = historyData.length;
+
+            if (historyData.length === 0) {
+                listEl.innerHTML = `<p class="text-center text-slate-400 py-6">មិនទាន់មានទិន្នន័យរក្សាទុកនៅឡើយទេ។</p>`;
+                return;
+            }
+
+            listEl.innerHTML = '';
+            historyData.forEach((item, idx) => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-800 transition duration-200';
+                div.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <div class="bg-indigo-100 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 p-2.5 rounded-xl border border-indigo-200 dark:border-indigo-800/60">
+                            <i class="fa-solid fa-receipt text-base"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 block">${item.type} - ${item.date}</span>
+                            <p class="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200">${item.summary}</p>
+                        </div>
+                    </div>
+                    <button onclick="deleteHistoryItem(${idx})" class="text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 p-2 transition">
+                        <i class="fa-solid fa-trash-can text-base"></i>
+                    </button>
+                `;
+                listEl.appendChild(div);
+            });
+        }
+
+        function deleteHistoryItem(index) {
+            historyData.splice(index, 1);
+            localStorage.setItem('khmer_finance_history', JSON.stringify(historyData));
+            renderHistory();
+            showToast('បានលុបកំណត់ត្រា!');
+        }
+
+        function clearHistory() {
+            historyData = [];
+            localStorage.removeItem('khmer_finance_history');
+            renderHistory();
+            showToast('បានសម្អាតប្រវត្តិទាំងអស់!');
+        }
+
+        // Initial setup on load
+        window.onload = function() {
+            document.getElementById('history-count').innerText = historyData.length;
+            calculateSalary();
+        };
+    </script>
+</body>
+</html>
